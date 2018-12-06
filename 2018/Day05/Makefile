@@ -1,5 +1,5 @@
 test: build
-	# Build and execute our program
+	# Execute our program
 	./main
 build:
 	# Build the binary
