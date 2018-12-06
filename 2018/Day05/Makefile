@@ -3,7 +3,7 @@ test: build
 	./main
 build:
 	# Build the binary
-	gcc -o main main.c
+	clang -o main main.c
 clean:
 	# Clean up the build binary
 	rm main
