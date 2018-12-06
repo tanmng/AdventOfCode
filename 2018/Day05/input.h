@@ -4,7 +4,6 @@
  * define real input values for our problem
  *
  */
-#include <string.h>
 #ifndef __INTPUT_H__
 #define __INTPUT_H__
 
