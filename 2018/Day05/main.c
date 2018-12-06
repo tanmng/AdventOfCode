@@ -13,14 +13,6 @@
 
 const int MAX_STRING_LEN = 9240;
 
-// Change the following 2 values to 0 (the number, not the char)
-// respectively to use the program for part 1 of our problem
-const int TARGET_CHAR_BEGIN = 0;
-const int TARGET_CHAR_END = 0;
-
-/* const int TARGET_CHAR_BEGIN = 'A'; */
-/* const int TARGET_CHAR_END = 'Z'; */
-
 /*
  * Return whether 2 characters eliminate one another
  *   if can eliminate, return 1
@@ -31,8 +23,7 @@ int collapsible(char a, char b){
 
 int main(){
     char cur_char;
-    char stack[MAX_STRING_LEN];
-    stack[0] = ' ';
+    char stack[MAX_STRING_LEN] = " ";
     int min_len = INPUT_STRING_LEN;
     clock_t tv1, tv2;
     tv1=clock();
