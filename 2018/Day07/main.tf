@@ -19,6 +19,11 @@ EOF
   # Some constants that we use
   all_characters         = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   all_characters_as_list = "${split("", local.all_characters)}"
+  result_file            = "result"
+
+  # Type as well as name of the node in the final graph that we want to construct using our compute module
+  node_prefix       = "resource null_resource char_"
+  dependency_prefix = "${replace(replace(local.node_prefix, "/^[^ ]+ /", ""), " ", ".")}"
 }
 
 # Figure out the dependency for each character
@@ -41,23 +46,27 @@ data null_data_source dependency {
 # Render the module file - Unfortunately Terraform doesn't allow interpolation in 
 # `depends_on` variable, as such we have to try to render it and then reuse
 # Quite a strange idea, but it works, so whatever
-resource local_file calculation_module {
-  filename = "module.done"
+resource local_file compute_module {
+  filename = "tan-local/main.tf"
 
   content = "${join(
     "\n",
-    data.template_file.calculation_module_snippet.*.rendered
+    data.template_file.compute_module_snippet.*.rendered
   )}"
 }
 
-data template_file calculation_module_snippet {
+data template_file compute_module_snippet {
   count = 6
 
   # List of variables here is set up in dependency
+  # note that indent does NOT work
   template = <<EOF
-data null_data_source char_$${lower(char)} {
-  inputs {
-    char = "$${upper(char)}"
+${local.node_prefix}$${lower(char)} {
+  depends_on = [
+    $${join(",\n    ", formatlist("\"${local.dependency_prefix}%s\"", split("", lower(dependency_as_string))))}
+  ]
+  provisioner local-exec {
+    command = "echo $${upper(char)} >> ${local.result_file}"
   }
 }
 EOF
