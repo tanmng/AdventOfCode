@@ -14,6 +14,8 @@ EOF
     "${split("\n", replace(local.input, "/Step (.) must be .* step (.) can begin./", "$1$2"))}",
   ]
 
+  intput_pair_joined = "${join(",", local.input_as_pair)}"
+
   # Some constants that we use
   all_characters         = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   all_characters_as_list = "${split("", local.all_characters)}"
@@ -22,12 +24,17 @@ EOF
 # Figure out the dependency for each character
 data null_data_source dependency {
   # count = "${length(local.all_characters)}"
-  count = 1
+  count = 6
 
   inputs {
-    char            = "${element(local.all_characters_as_list, count.index)}"
-    join            = "${join(",", local.input_as_pair)}"
-    char_dependency = "${replace(join(",", local.input_as_pair), "/.[^${element(local.all_characters_as_list, count.index)}],/", "")}"
+    char                = "${element(local.all_characters_as_list, count.index)}"
+    char_dependency_raw = "${replace(local.intput_pair_joined, "/.[^${element(local.all_characters_as_list, count.index)}],/", "")}"
+
+    dependency_as_string = "${replace(
+      replace(local.intput_pair_joined, "/.[^${element(local.all_characters_as_list, count.index)}],/", ""),
+      "${element(local.all_characters_as_list, count.index)},",
+      ""
+    )}"
   }
 }
 
