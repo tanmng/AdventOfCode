@@ -1,4 +1,5 @@
 locals {
+  # The newline at the end before the keyword EOF is VERY IMPORTANT
   input = <<EOF
 Step C must be finished before step A can begin.
 Step C must be finished before step F can begin.
@@ -25,8 +26,8 @@ data null_data_source dependency {
 
   inputs {
     char            = "${element(local.all_characters_as_list, count.index)}"
-    join            = "${join("", local.input_as_pair)}"
-    char_dependency = "${replace(join("", local.input_as_pair), "/.[^${element(local.all_characters_as_list, count.index)}]/", "")}"
+    join            = "${join(",", local.input_as_pair)}"
+    char_dependency = "${replace(join(",", local.input_as_pair), "/.[^${element(local.all_characters_as_list, count.index)}],/", "")}"
   }
 }
 
