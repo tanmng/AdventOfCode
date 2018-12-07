@@ -1,6 +1,8 @@
-locals {
-  # The newline at the end before the keyword EOF is VERY IMPORTANT
-  input = <<EOF
+variable input_data {
+  description = "The input for our solver in string format"
+  type        = "string"
+
+  default = <<EOF
 Step C must be finished before step A can begin.
 Step C must be finished before step F can begin.
 Step A must be finished before step B can begin.
@@ -9,9 +11,13 @@ Step B must be finished before step E can begin.
 Step D must be finished before step E can begin.
 Step F must be finished before step E can begin.
 EOF
+}
+
+locals {
+  # The newline at the end before the keyword EOF is VERY IMPORTANT
 
   input_as_pair = [
-    "${split("\n", replace(local.input, "/Step (.) must be .* step (.) can begin./", "$1$2"))}",
+    "${split("\n", replace(var.input_data, "/Step (.) must be .* step (.) can begin./", "$1$2"))}",
   ]
 
   intput_pair_joined = "${join(",", local.input_as_pair)}"
