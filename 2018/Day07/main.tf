@@ -38,6 +38,33 @@ data null_data_source dependency {
   }
 }
 
+# Render the module file - Unfortunately Terraform doesn't allow interpolation in 
+# `depends_on` variable, as such we have to try to render it and then reuse
+# Quite a strange idea, but it works, so whatever
+resource local_file calculation_module {
+  filename = "module.done"
+
+  content = "${join(
+    "\n",
+    data.template_file.calculation_module_snippet.*.rendered
+  )}"
+}
+
+data template_file calculation_module_snippet {
+  count = 6
+
+  # List of variables here is set up in dependency
+  template = <<EOF
+data null_data_source char_$${lower(char)} {
+  inputs {
+    char = "$${upper(char)}"
+  }
+}
+EOF
+
+  vars = "${data.null_data_source.dependency.*.outputs[count.index]}"
+}
+
 /* data null_data_source step { */
 /*   count = "${length(local.all_characters)}" */
 
@@ -47,6 +74,6 @@ data null_data_source dependency {
 /* } */
 
 resource local_file output_file {
-  content  = "${jsonencode(data.null_data_source.dependency.*.outputs)}"
+  content  = "${jsonencode(data.null_data_source.dependency.*.outputs[0])}"
   filename = "foo.json"
 }
