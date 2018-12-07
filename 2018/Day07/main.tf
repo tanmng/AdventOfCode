@@ -52,7 +52,7 @@ data null_data_source dependency {
 # `depends_on` variable, as such we have to try to render it and then reuse
 # Quite a strange idea, but it works, so whatever
 resource local_file compute_module {
-  filename = "tan-local/main.tf"
+  filename = "compute/main.tf"
 
   content = "${join(
     "\n",

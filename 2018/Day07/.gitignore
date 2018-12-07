@@ -2,3 +2,4 @@
 .terraform
 *.tfstate*
 module.done
+compute
