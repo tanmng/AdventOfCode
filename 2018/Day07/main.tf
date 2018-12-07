@@ -70,9 +70,6 @@ ${local.node_prefix}$${lower(char)} {
   depends_on = [
     $${join(",\n    ", formatlist("\"${local.dependency_prefix}%s\"", split("", lower(dependency_as_string))))}
   ]
-  provisioner local-exec {
-    command = "echo $${upper(char)} >> ${local.result_file}"
-  }
 }
 EOF
 
