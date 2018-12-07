@@ -28,8 +28,7 @@ EOF
 
 # Figure out the dependency for each character
 data null_data_source dependency {
-  # count = "${length(local.all_characters)}"
-  count = 6
+  count = "${length(local.all_characters)}"
 
   inputs {
     char                = "${element(local.all_characters_as_list, count.index)}"
@@ -56,7 +55,7 @@ resource local_file compute_module {
 }
 
 data template_file compute_module_snippet {
-  count = 6
+  count = "${length(local.all_characters)}"
 
   # List of variables here is set up in dependency
   # note that indent does NOT work
@@ -72,17 +71,4 @@ ${local.node_prefix}$${lower(char)} {
 EOF
 
   vars = "${data.null_data_source.dependency.*.outputs[count.index]}"
-}
-
-/* data null_data_source step { */
-/*   count = "${length(local.all_characters)}" */
-
-/*   inputs { */
-/*     dependency = "${data.null_data_source.*.dependency" */
-/*   } */
-/* } */
-
-resource local_file output_file {
-  content  = "${jsonencode(data.null_data_source.dependency.*.outputs[0])}"
-  filename = "foo.json"
 }
